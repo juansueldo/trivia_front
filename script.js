@@ -85,6 +85,8 @@ async function addTrivia() {
     const respuesta = document.getElementById("respuesta").value;
     const categoryId = document.getElementById("category").value;
     const typeId = document.getElementById("type").value;
+    const difficultyId = document.getElementById("difficulty").value;
+
 
     if (!pregunta || opciones.length < 2 || !respuesta || !categoryId || !typeId) {
         Swal.fire('Error', 'Completa todos los campos correctamente.', 'error');
@@ -96,7 +98,9 @@ async function addTrivia() {
         question: pregunta,
         options: opciones,
         correct_answer: respuesta,
-        type: typeId
+        type: typeId,
+        difficulty: difficultyId,
+        status: 1
     };
 
     const { data, error } = await supabase.from('trivia').insert([nuevaTrivia]);
