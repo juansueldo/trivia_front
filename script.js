@@ -24,40 +24,57 @@ function populateSelect(selectId, data, defaultOptionText) {
 // Obtener categorías, tipos, dificultades y trivias
 async function fetchData() {
     try {
-        const [categories, types, difficulties, trivia] = await Promise.all([
+        // Ejecuta todas las consultas en paralelo
+        const [{ data: categories, error: categoriesError }, 
+               { data: types, error: typesError }, 
+               { data: difficulties, error: difficultiesError }, 
+               { data: trivia, error: triviaError }] = await Promise.all([
             supabase.from('category').select('*'),
             supabase.from('type').select('*'),
             supabase.from('difficulty').select('*'),
             supabase.from('trivia').select('*, category(description), type(description), difficulty(description)').eq('status', 1)
         ]);
 
-        if (categories.error || types.error || difficulties.error || trivia.error) {
+        // Manejo de errores
+        if (categoriesError || typesError || difficultiesError || triviaError) {
             throw new Error('Error al obtener los datos');
         }
 
-        populateSelect('category', categories.data, 'Seleccione una categoría');
-        populateSelect('type', types.data, 'Selecciona un tipo');
-        populateSelect('difficulty', difficulties.data, 'Selecciona la dificultad');
+        // Llenar los selects
+        populateSelect('category', categories || [], 'Seleccione una categoría');
+        populateSelect('type', types || [], 'Selecciona un tipo');
+        populateSelect('difficulty', difficulties || [], 'Selecciona la dificultad');
 
+        // Inicializar o limpiar DataTable
         let table = $('#triviasTable').DataTable();
         table.clear();
-        trivia.data.forEach(triviaItem => {
+
+        // Agregar filas a la tabla
+        (trivia || []).forEach(triviaItem => {
+            const style = triviaItem.type != 1 ? "bg-info" : 'bg-success';
             table.row.add([
-                triviaItem.question,
+                triviaItem.question || "Sin pregunta",
                 triviaItem.category?.description || "Sin categoría",
-                triviaItem.options,
-                triviaItem.correct_answer,
-                triviaItem.type?.description || "Sin tipo",
+                triviaItem.options || "Sin opciones",
+                triviaItem.correct_answer || "Sin respuesta",
+                `<span class="badge ${style} text-capitalize">${triviaItem.type?.description || "Sin tipo"}</span>`,
                 triviaItem.difficulty?.description || "Sin dificultad",
-                `<button class="btn btn-warning btn-sm" onclick="editTrivia(${triviaItem.id})"><i class="fa-solid fa-pen-to-square"></i></button>
-                 <button class="btn btn-danger btn-sm" onclick="deleteTrivia(${triviaItem.id})"><i class="fa-solid fa-trash"></i></button>` // Botones de acción
+                `<div class="d-flex align-items-center"><a href="javascript:;" class="text-body mx-2" onclick="editTrivia(${triviaItem.id})">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                 </a>
+                 <a href="javascript:;" class="text-body" onclick="deleteTrivia(${triviaItem.id})">
+                    <i class="fa-solid fa-trash"></i>
+                 </a></div>`
             ]);
         });
+
+        // Dibujar la tabla con los nuevos datos
         table.draw();
     } catch (error) {
-        console.error('Error al cargar los datos: ', error.message);
+        console.error('Error al cargar los datos:', error.message);
     }
 }
+
 
 // Función para agregar nueva categoría
 async function addCategory() {
@@ -216,7 +233,7 @@ document.getElementById("toggleDarkMode").addEventListener("click", () => {
 
     // Obtener el ícono
     const themeIcon = document.getElementById("themeIcon");
-
+    const table = document.getElementById("triviasTable");
     // Comprobar si estamos en modo oscuro
     const isDarkMode = document.body.classList.contains("dark-mode");
 
@@ -224,13 +241,11 @@ document.getElementById("toggleDarkMode").addEventListener("click", () => {
     if (isDarkMode) {
         themeIcon.classList.remove("fa-moon");  // Eliminar luna
         themeIcon.classList.add("fa-sun");      // Agregar sol
+        table.classList.add('table-dark');
     } else {
         themeIcon.classList.remove("fa-sun");   // Eliminar sol
         themeIcon.classList.add("fa-moon");     // Agregar luna
+        table.classList.remove('table-dark');
     }
-
-    // Mostrar el cambio con SweetAlert
-    const currentMode = isDarkMode ? "modo oscuro" : "modo claro";
-    Swal.fire(`Modo cambiado a ${currentMode}`);
 });
 
