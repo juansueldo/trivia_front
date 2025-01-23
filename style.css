@@ -1,0 +1,51 @@
+body.dark-mode {
+    background-color: #121212;
+    color: white;
+}
+
+/* Estilos para el DataTable en modo oscuro */
+.dark-mode .table {
+    background-color: #333;
+    color: white;
+}
+
+.dark-mode .table th,
+.dark-mode .table td {
+    border-color: #555;
+}
+
+.dark-mode .dataTables_wrapper .dataTables_filter,
+.dark-mode .dataTables_wrapper .dataTables_length,
+.dark-mode .dataTables_wrapper .dataTables_info {
+    color: white;
+}
+
+.dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button {
+    background-color: #444;
+    color: white;
+    border: 1px solid #555;
+}
+
+.dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background-color: #555;
+    color: white;
+}
+
+.dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background-color: #333;
+    border: 1px solid #444;
+}
+
+.dark-mode .modal-content {
+    background-color: #444;
+    color: white;
+}
+
+/* Opcionalmente, puedes aplicar estilos para las celdas del DataTable */
+.dark-mode .table tbody tr:nth-child(even) {
+    background-color: #444;
+}
+
+.dark-mode .table tbody tr:nth-child(odd) {
+    background-color: #555;
+}

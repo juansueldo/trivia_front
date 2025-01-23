@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- DataTables CSS -->
+    <link rel="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" rel="stylesheet">
+    <!-- Enlace a Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- SweetAlert2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.11/dist/sweetalert2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Enlace a jQuery (requerido por Bootstrap 4 para los modales) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+     <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.11/dist/sweetalert2.all.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+</head>
+<body>
+    <nav class="navbar w-100 d-flex">
+        <!-- Logo -->
+        <a href="#" class="navbar-brand m-2" style="font-size: 1.5rem; font-weight: bold;">Api Trivia</a>
+    
+        <!-- Botón de modo oscuro -->
+        <button id="toggleDarkMode" class="btn btn-dark ms-auto m-2">
+            <i class="fa-solid fa-moon" id="themeIcon"></i>
+        </button>
+    </nav>
+    
+    
+<div class="container mt-5">
+    
+     <!-- Botón para abrir Modal de Agregar Categoría -->
+     <button class="btn btn-primary" data-toggle="modal" data-target="#triviaModal">Agregar trivia</button>
+     <button class="btn btn-secondary" data-toggle="modal" data-target="#categoryModal">Agregar Categoria</button>
+
+    <!-- Formulario para Agregar Trivia -->
+    <div class="modal fade" id="triviaModal" tabindex="-1" role="dialog" aria-labelledby="triviaModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="categoryModalLabel">Agregar Nueva Trivia</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-4">
+                        <input type="text" id="pregunta" class="form-control mb-2" placeholder="Escribe la pregunta">
+                        <select name="category" id="category" class="form-control mb-2"></select>
+                        <input type="text" id="opciones" class="form-control mb-2" placeholder="Opciones separadas por coma">
+                        <input type="text" id="respuesta" class="form-control mb-2" placeholder="Respuesta correcta">
+                        <select name="type" id="type" class="form-control mb-2"></select>
+                        <select name="difficulty" id="difficulty" class="form-control mb-2"></select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" onclick="addTrivia()">Agregar Trivia</button>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+
+    <!-- Modal para Agregar Categoria -->
+    <div class="modal fade" id="categoryModal" tabindex="-1" role="dialog" aria-labelledby="categoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="categoryModalLabel">Agregar Nueva Categoría</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="newCategory" class="form-control" placeholder="Escribe el nombre de la categoría">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="addCategory()">Agregar Categoría</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mt-3">
+        <div class="card-body mt-4">
+            <h2>Lista de Trivias</h2>
+            <table id="triviasTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Pregunta</th>
+                        <th>Categoría</th>
+                        <th>Opciones</th>
+                        <th>Respuesta Correcta</th>
+                        <th>Tipo</th>
+                        <th>Dificultad</th>
+                        <th>Acciones</th> <!-- Nueva columna de acciones -->
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+<!-- Scripts de Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="./script.js"></script>
+
+</body>
+</html>
+
