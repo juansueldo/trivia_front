@@ -187,7 +187,8 @@ async function saveEditedTrivia(id) {
     const categoryId = document.getElementById("category").value;
     const typeId = document.getElementById("type").value;
     const difficultyId = document.getElementById("difficulty").value;
-
+    let respuesta = '';
+    let opciones=[];
     $('input[name="inputSelection"]:checked').each(function() {
         respuesta = $('#' + $(this).val()).val();
     });
