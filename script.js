@@ -46,7 +46,13 @@ async function fetchData() {
         populateSelect('difficulty', difficulties || [], 'Selecciona la dificultad');
 
         // Inicializar o limpiar DataTable
-        let table = $('#triviasTable').DataTable();
+        let table = $('#triviasTable').DataTable({
+            responsive: true,
+            autoWidth: false,
+            language: {
+                url: "https://cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+            }
+        });
         table.clear();
 
         // Agregar filas a la tabla
