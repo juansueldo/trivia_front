@@ -10,7 +10,9 @@ body.dark-mode {
     background-color: #201d1d;
     color: white;
 }
-
+body{
+    background-color: #f8f7fa;
+}
 /* Estilos para el DataTable en modo oscuro */
 .dark-mode .table {
     background-color: #201d1d;
