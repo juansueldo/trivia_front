@@ -49,9 +49,6 @@ async function fetchData() {
         let table = $('#triviasTable').DataTable({
             responsive: true,
             autoWidth: false,
-            language: {
-                url: "https://cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
-            }
         });
         table.clear();
 
@@ -104,13 +101,20 @@ async function addCategory() {
 // Agregar nueva trivia
 async function addTrivia() {
     const pregunta = document.getElementById("pregunta").value;
-    const opciones = document.getElementById("opciones").value.split(",").map(o => o.trim());
-    const respuesta = document.getElementById("respuesta").value;
     const categoryId = document.getElementById("category").value;
     const typeId = document.getElementById("type").value;
     const difficultyId = document.getElementById("difficulty").value;
+    let respuesta = '';
+    let opciones=[];
 
+    $('input[name="inputSelection"]:checked').each(function() {
+        respuesta = $('#' + $(this).val()).val();
+    });
+    $('input[name="opcion"]').each(function() {
+        opciones.push($(this).val()); 
+    });
 
+    console.log(respuesta); console.log(opciones);
     if (!pregunta || opciones.length < 2 || !respuesta || !categoryId || !typeId) {
         Swal.fire('Error', 'Completa todos los campos correctamente.', 'error');
         return;
@@ -148,12 +152,11 @@ async function editTrivia(id) {
 
     // Rellenar los campos del modal con los datos existentes
     document.getElementById('pregunta').value = data.question;
-    document.getElementById('opciones').value = data.options.join(", ");
-    document.getElementById('respuesta').value = data.correct_answer;
     document.getElementById('category').value = data.category;
-    document.getElementById('type').value = data.type;
     document.getElementById('difficulty').value = data.difficulty;
-
+    document.getElementById('type').value = data.type;
+    
+    changeOptions(data.type, data.options, data.correct_answer);
     // Cambiar el texto y el comportamiento del botón
     const saveButton = document.querySelector('#triviaModal .btn-primary');
     saveButton.innerHTML = 'Guardar Cambios';
@@ -169,12 +172,16 @@ async function editTrivia(id) {
 // Guardar los cambios de la trivia editada
 async function saveEditedTrivia(id) {
     const pregunta = document.getElementById("pregunta").value;
-    const opciones = document.getElementById("opciones").value.split(",").map(o => o.trim());
-    const respuesta = document.getElementById("respuesta").value;
     const categoryId = document.getElementById("category").value;
     const typeId = document.getElementById("type").value;
     const difficultyId = document.getElementById("difficulty").value;
 
+    $('input[name="inputSelection"]:checked').each(function() {
+        respuesta = $('#' + $(this).val()).val();
+    });
+    $('input[name="opcion"]').each(function() {
+        opciones.push($(this).val()); 
+    });
     // Asegúrate de que estos campos no sean nulos o vacíos
     if (!pregunta || !opciones || !respuesta || !categoryId || !typeId) {
         Swal.fire('Error', 'Por favor completa todos los campos correctamente.', 'error');
@@ -195,7 +202,6 @@ async function saveEditedTrivia(id) {
         Swal.fire('Error', 'Error al actualizar: ' + error.message, 'error');
         return;
     }
-    console.log(data);
     Swal.fire('Éxito', 'Trivia actualizada con éxito!', 'success');
     fetchData();  // Recargar los datos
     $('#triviaModal').modal('hide'); // Cerrar el modal
@@ -232,6 +238,9 @@ async function deleteTrivia(id) {
 // Llamadas iniciales para cargar los datos
 $(document).ready(() => {
     fetchData();
+    $('#type').on('change', function(event) {
+        changeOptions($(this).val());
+    });
 });
 document.getElementById("toggleDarkMode").addEventListener("click", () => {
     // Cambiar el tema (oscuro o claro)
@@ -254,4 +263,73 @@ document.getElementById("toggleDarkMode").addEventListener("click", () => {
         table.classList.remove('table-dark');
     }
 });
+
+function changeOptions(type, options = null, correct_answer = null) {
+    const $container = $('#container-options');
+    $container.empty(); // Limpiar el contenido del div
+    let inputs = '';
+
+    // Función para verificar si una opción es la correcta
+    const checkCorrectAnswer = (optionValue) => {
+        // Verificamos si options y correct_answer no son null
+        if (options && correct_answer) {
+            return optionValue === correct_answer ? 'checked' : '';
+        }
+        return ''; // Si alguno es null, no marcamos ninguna opción
+    };
+
+    switch (parseInt(type)) {
+        case 1:
+            inputs = `
+            <div class="row"> 
+                    <div class="col-6">
+                        <label for="opcion1">Opción 1:</label>
+                        <input type="text" id="opcion1" name="opcion" value="${options ? options[0] : ''}">
+                        <input type="radio" name="inputSelection" value="opcion1" ${checkCorrectAnswer(options ? options[0] : '')}>
+                    </div>
+                    <div class="col-6">
+                        <label for="opcion2">Opción 2:</label>
+                        <input type="text" id="opcion2" name="opcion" value="${options ? options[1] : ''}">
+                        <input type="radio" name="inputSelection" value="opcion2" ${checkCorrectAnswer(options ? options[1] : '')}>
+                    </div>
+                </div>
+                <div class="row"> 
+                    <div class="col-6">
+                        <label for="opcion3">Opción 3:</label>
+                        <input type="text" id="opcion3" name="opcion" value="${options ? options[2] : ''}">
+                        <input type="radio" name="inputSelection" value="opcion3" ${checkCorrectAnswer(options ? options[2] : '')}>
+                    </div>
+                    <div class="col-6">
+                        <label for="opcion4">Opción 4:</label>
+                        <input type="text" id="opcion4" name="opcion" value="${options ? options[3] : ''}">
+                        <input type="radio" name="inputSelection" value="opcion4" ${checkCorrectAnswer(options ? options[3] : '')}>
+                    </div>
+                </div>
+            `;
+            break;
+        case 2:
+            inputs = `
+            <div class="row"> 
+                <div class="col-6">
+                    <label for="opcion1">Opción 1:</label>
+                    <input type="text" id="opcion1" name="opcion" value="${options ? options[0] : ''}">
+                    <input type="radio" name="inputSelection" value="opcion1" ${checkCorrectAnswer(options ? options[0] : '')}>
+                </div>
+                <div class="col-6">
+                    <label for="opcion2">Opción 2:</label>
+                    <input type="text" id="opcion2" name="opcion" value="${options ? options[1] : ''}">
+                    <input type="radio" name="inputSelection" value="opcion2" ${checkCorrectAnswer(options ? options[1] : '')}>
+                </div>
+            </div>
+            `;
+            break;
+    }
+
+    $container.append(inputs);
+}
+
+
+
+
+
 
